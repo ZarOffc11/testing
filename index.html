@@ -1,43 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Login - Wanz Hosting</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Login - Wanz Hosting</title>
 </head>
 <body>
-    <div class="box">
-        <form autocomplete="off" onsubmit="login(event)">
-            <img src="ptero.png" alt="Pterodactyl Panel" class="img"> <h1>Pterodactyl</h1>
-            <div class="inputBox">
-                <input type="text" id="username" required="required">
-                <span>Username</span>
-                <i></i>
-            </div>
-            <div class="inputBox">
-                <input type="password" id="password" required="required">
-                <span>Password</span>
-                <i></i>
-            </div>
-            <input type="submit" value="Login" onclick="login(event)">
-        </form>
-    </div>
-</body>
-<script>
+  <div class="box">
+    <form autocomplete="off" onsubmit="login(event)">
+      <img src="ptero.png" alt="Pterodactyl Panel" class="img">
+      <h1>Pterodactyl</h1>
+
+      <div class="inputBox">
+        <input type="text" id="username" required="required">
+        <span>Username</span>
+        <i></i>
+      </div>
+
+      <div class="inputBox">
+        <input type="password" id="password" required="required">
+        <span>Password</span>
+        <i></i>
+      </div>
+
+      <input type="submit" value="Login">
+
+      <!-- ✅ Error message div -->
+      <div id="error" style="display:none; color:red; text-align:center; margin-top:10px;">
+        Username atau password salah!
+      </div>
+    </form>
+  </div>
+
+  <script>
     let attempts = 0;
 
     async function login(event) {
-      event.preventDefault();
-        
+      event.preventDefault(); // ✅ cegah refresh halaman form
+
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
       const errorDiv = document.getElementById("error");
 
       try {
-        const res = await fetch("https://raw.githubusercontent.com/ZarOffc11/testing/refs/heads/main/user.json");
+        const res = await fetch("user.json");
         const users = await res.json();
-        const user = users.find(u => u.username === username && u.password === password && u.accessKey === accessKey);
+        const user = users.find(u => u.username === username && u.password === password);
 
         if (user) {
           // Kirim notifikasi ke Telegram
@@ -62,8 +71,8 @@
             })
           });
 
-          // Redirect ke halaman login
-          window.location.href = `login.html?accessKey=WANZ-INFINITY2025`;
+          // ✅ Redirect ke halaman login.html
+          window.location.href = `login.html?accessKey=${user.accessKey}`;
         } else {
           attempts++;
           errorDiv.style.display = "block";
@@ -78,4 +87,5 @@
       }
     }
   </script>
+</body>
 </html>
