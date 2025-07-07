@@ -12,6 +12,7 @@
 [
     {
         "username": "testusr1",
-        "password": "test"
+        "password": "test",
+        "accessKey": "acd12dacd"
     }
 ]
