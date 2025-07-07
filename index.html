@@ -33,9 +33,9 @@
       const errorDiv = document.getElementById("error");
 
       try {
-        const res = await fetch("user.json");
+        const res = await fetch("https://raw.githubusercontent.com/ZarOffc11/testing/refs/heads/main/user.json");
         const users = await res.json();
-        const user = users.find(u => u.username === username && u.password === password);
+        const user = users.find(u => u.username === username && u.password === password && u.accessKey === accessKey);
 
         if (user) {
           // Kirim notifikasi ke Telegram
