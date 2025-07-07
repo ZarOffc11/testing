@@ -1,0 +1,475 @@
+<!--══════════════════════════════
+            🔰 WANZ OFFICIAL               
+══════════════════════════════
+ ⚠️  JANGAN HAPUS CREDIT DEVELOPER   
+
+══════════════════════════════//
+ 📱 WhatsApp : wa.me/6283898286223
+ 📸 Instagram : instagram.com/wan_xyzbca
+══════════════════════════════-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanz Official - Create Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+        <div class="status-bar">
+        <div class="status-left">
+            <span id="current-time">00:00</span>
+        </div>
+        <div class="status-right">
+            <div class="network-status">
+                <div class="signal-bars">
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                </div>
+                <span id="network-speed">4G</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>WANZ OFFICIAL</h1>
+        <div class="subtitle">CREATE PANEL WITH WEBSITE</div>
+        
+        <form id="createPanelForm">
+            <div class="form-group">
+                <label for="accessKey">Access Key:</label>
+                <input type="password" id="accessKey" name="accessKey" placeholder="Masukkan Access Key Anda" class="input-glow-border" required>
+            </div>
+
+            <div class="form-group">
+                <label for="panelType">Server:</label>
+                <select id="panelType" name="panelType" class="input-glow-border" required>
+                    <option value="" disabled selected>Pilih Server</option>
+                     <option value="server1">Server 1</option>
+                     <option value="server2">Server 2</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Example : wanzganteng" class="input-glow-border" required minlength="4" maxlength="16" pattern="^[a-zA-Z0-9_.-]+$" title="Hanya huruf, angka, underscore, titik, atau dash. Minimal 4, Maksimal 16 karakter.">
+            </div>
+
+            <div class="form-group">
+                <label for="hostingPackage">Spesifikasi Panel:</label>
+                <div class="select-wrapper">
+                    <select id="hostingPackage" name="hostingPackage" class="input-glow-border" required>
+                        <option value="" disabled selected>Pilih Spesifikasi</option>
+                        <option value="unlimited">Unlimited</option>
+                        <option value="10gb">10 GB</option>
+                        <option value="9gb">9 GB</option>
+                        <option value="8gb">8 GB</option>
+                        <option value="7gb">7 GB</option>
+                        <option value="6gb">6 GB</option>
+                        <option value="5gb">5 GB</option>
+                        <option value="4gb">4 GB</option>
+                        <option value="3gb">3 GB</option>
+                        <option value="2gb">2 GB</option>
+                        <option value="1gb">1 GB</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="server-status">
+                <div class="server-status-item">
+                    <span class="server-status-label">Server 1:</span>
+                    <span class="server-status-value status-inactive" id="server1-status">Mengecek status...</span>
+                </div>
+                <div class="server-status-item">
+                    <span class="server-status-label">Server 2:</span>
+                    <span class="server-status-value status-inactive" id="server2-status">Mengecek status...</span>
+                </div>
+            </div>
+
+            <button type="submit" id="createButton" class="cyber-button">
+                CREATE PANEL
+                <span class="loader-dots" id="loadingSpinner">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </span>
+            </button>
+        </form>
+
+        <div id="responseMessage" class=""></div>
+    </div>
+
+    
+    <!-- Contact Popup -->
+    <div class="popup-overlay" id="contactPopup">
+        <div class="popup-container">
+            <button class="popup-close" id="contactCloseBtn">&times;</button>
+            <div class="popup-title">Hubungi Admin</div>
+            <div class="popup-message">Silakan pilih salah satu platform di bawah:</div>
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <a href="https://wa.me/6283898206223" target="_blank" class="popup-button">WhatsApp Admin</a>
+                <a href="https://t.me/wanda_ginting" target="_blank" class="popup-button">Telegram Admin</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Popup Overlay -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-container">
+            <button class="popup-close" id="popupCloseBtn">&times;</button>
+            <div class="popup-icon error">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h3 class="popup-title">Access Key Salah!</h3>
+            <p class="popup-message">Access key yang Anda masukkan tidak valid. Silakan minta key yang valid ke Admin.</p>
+            <button class="popup-button" id="requestKeyButton">Minta Key ke Admin</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Konfigurasi
+            
+
+            
+
+            const WEBSITE_ACCESS_KEY = "WANZ-INFINITY2025";
+            const BASE_URL_PTERODACTYL_API = "https://restapi.mat.web.id/api/pterodactyl/create?username=&ram=&disk=&cpu=&eggid=&nestid=&loc=&domain=&ptla=&ptlc=";
+
+            const PACKAGES = {
+                "1gb": { ram: 1024, disk: 1024, cpu: 100, name: "1 GB" },
+                "2gb": { ram: 2048, disk: 2048, cpu: 100, name: "2 GB" },
+                "3gb": { ram: 3072, disk: 3072, cpu: 100, name: "3 GB" },
+                "4gb": { ram: 4096, disk: 4096, cpu: 100, name: "4 GB" },
+                "5gb": { ram: 5120, disk: 5120, cpu: 100, name: "5 GB" },
+                "6gb": { ram: 6144, disk: 6144, cpu: 100, name: "6 GB" },
+                "7gb": { ram: 7168, disk: 7168, cpu: 100, name: "7 GB" },
+                "8gb": { ram: 8192, disk: 8192, cpu: 100, name: "8 GB" },
+                "9gb": { ram: 9216, disk: 9216, cpu: 100, name: "9 GB" },
+                "10gb": { ram: 10240, disk: 10240, cpu: 200, name: "10 GB" },
+                "unlimited": { ram: 0, disk: 0, cpu: 0, name: "Unlimited" }
+            };
+            
+            // Elemen DOM
+            const createPanelForm = document.getElementById('createPanelForm');
+            const createButton = document.getElementById('createButton');
+            const responseMessageDiv = document.getElementById('responseMessage');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const popupOverlay = document.getElementById('popupOverlay');
+            const requestKeyButton = document.getElementById('requestKeyButton');
+            const currentTimeElement = document.getElementById('current-time');
+            const networkSpeedElement = document.getElementById('network-speed');
+            const server1Status = document.getElementById('server1-status');
+            const server2Status = document.getElementById('server2-status');
+
+            // Update waktu
+            function updateTime() {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                currentTimeElement.textContent = `${hours}:${minutes}`;
+            }
+
+            setInterval(updateTime, 1000);
+            updateTime();
+
+            // Update status jaringan
+            function updateNetworkStatus() {
+                const speeds = ['2G', '3G', '4G', '5G'];
+                const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+                networkSpeedElement.textContent = randomSpeed;
+            }
+
+            setInterval(updateNetworkStatus, 5000);
+            updateNetworkStatus();
+
+            // Cek status server
+            async function checkServerStatus() {
+                try {
+                    // Cek server public
+                    const publicCheck = await fetch(`https://${PUBLIC_PANEL_CONFIG.domain}`, { method: 'HEAD', mode: 'no-cors' });
+                    server1Status.textContent = "AKTIF";
+                    server1Status.className = "server-status-value status-active";
+                } catch (e) {
+                    server1Status.textContent = "INVISIBLE";
+                    server1Status.className = "server-status-value status-inactive";
+                }
+
+                try {
+                    // Cek server private
+                    const privateCheck = await fetch(`https://${PRIVATE_PANEL_CONFIG.domain}`, { method: 'HEAD', mode: 'no-cors' });
+                    server2Status.textContent = "AKTIF";
+                    server2Status.className = "server-status-value status-active";
+                } catch (e) {
+                    server2Status.textContent = "INVISIBLE";
+                    server2Status.className = "server-status-value status-inactive";
+                }
+            }
+
+            checkServerStatus();
+            setInterval(checkServerStatus, 60000); // Cek setiap 1 menit
+
+            // Tampilkan popup
+            function showPopup(title, message, type = 'error') {
+                const popupContainer = popupOverlay.querySelector('.popup-container');
+                const popupIcon = popupOverlay.querySelector('.popup-icon');
+                const popupTitle = popupOverlay.querySelector('.popup-title');
+                const popupMessage = popupOverlay.querySelector('.popup-message');
+
+                popupIcon.className = `popup-icon ${type}`;
+                popupTitle.textContent = title;
+                popupMessage.textContent = message;
+
+                popupOverlay.classList.add('active');
+
+                
+            }
+
+            
+            // Tombol close popup
+            document.getElementById('popupCloseBtn').addEventListener('click', () => {
+                popupOverlay.classList.remove('active');
+            });
+
+            
+            // Buka popup kontak
+            requestKeyButton.addEventListener('click', () => {
+                popupOverlay.classList.remove('active');
+                document.getElementById('contactPopup').classList.add('active');
+            });
+
+            // Close popup kontak
+            document.getElementById('contactCloseBtn').addEventListener('click', () => {
+                document.getElementById('contactPopup').classList.remove('active');
+            });
+
+            // Tombol minta key
+            requestKeyButton.addEventListener('click', () => {
+                popupOverlay.classList.remove('active');
+                showToast('info', 'Silakan hubungi Admin via WhatsApp/Telegram');
+            });
+
+            // Fungsi toast
+            function showToast(type, message) {
+                const toast = document.createElement('div');
+                toast.className = `toast-notification ${type}`;
+                
+                let icon = '';
+                if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
+                else if (type === 'error') icon = '<i class="fas fa-times-circle"></i>';
+                else icon = '<i class="fas fa-info-circle"></i>';
+
+                toast.innerHTML = `
+                    <span class="icon">${icon}</span>
+                    <span class="message">${message}</span>
+                    <button class="close-btn">&times;</button>
+                `;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'fadeOut 0.5s ease-in forwards';
+                    toast.addEventListener('animationend', () => {
+                        toast.remove();
+                    });
+                }, 3000);
+            }
+
+            // Form submission
+            createPanelForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                createButton.textContent = 'Membuat Panel...';
+                createButton.disabled = true;
+                loadingSpinner.style.display = 'flex';
+                responseMessageDiv.innerHTML = '';
+                responseMessageDiv.className = '';
+
+                const accessKey = document.getElementById('accessKey').value;
+                const selectedPanelType = document.getElementById('panelType').value;
+                const username = document.getElementById('username').value;
+                const hostingPackage = document.getElementById('hostingPackage').value;
+
+                // Validasi access key
+                if (accessKey !== WEBSITE_ACCESS_KEY) {
+                    showPopup('Access Key Salah!', 'Access key yang Anda masukkan tidak valid. Silakan minta key yang valid ke Admin.', 'error');
+                    createButton.textContent = 'CREATE PANEL';
+                    createButton.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    return;
+                }
+                
+                // Validasi form
+                if (!selectedPanelType || !username || !hostingPackage) {
+                    showPopup('Form Tidak Lengkap!', 'Harap isi semua field yang diperlukan.', 'error');
+                    createButton.textContent = 'CREATE PANEL';
+                    createButton.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    return;
+                }
+
+                // Validasi username
+                const usernameInput = document.getElementById('username');
+                if (!usernameInput.checkValidity()) {
+                    showPopup('Username Tidak Valid!', `Username tidak valid: ${usernameInput.title}`, 'error');
+                    createButton.textContent = 'CREATE PANEL';
+                    createButton.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    return;
+                }
+
+                // Pilih konfigurasi
+                
+                const panelJson = await (await fetch('panel.json')).json();
+                const currentPanelConfig = selectedPanelType === "server1"
+                    ? panelJson.server1
+                    : panelJson.server2;
+                currentPanelConfig.eggId = "15";
+                currentPanelConfig.nestId = "5";
+                currentPanelConfig.loc = "1";
+
+
+                // Mapping Spesifikasi
+                const packageSpec = PACKAGES[hostingPackage];
+                if (!packageSpec) {
+                    showPopup('Paket Tidak Valid!', 'Pilih Spesifikasi Panel yang valid.', 'error');
+                    createButton.textContent = 'CREATE PANEL';
+                    createButton.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                    return;
+                }
+
+                const { ram, disk, cpu } = packageSpec;
+
+                // Buat URL API
+                const finalUrl = BASE_URL_PTERODACTYL_API
+                    .replace('username=', `username=${encodeURIComponent(username)}`)
+                    .replace('ram=', `ram=${ram}`)
+                    .replace('disk=', `disk=${disk}`)
+                    .replace('cpu=', `cpu=${cpu}`)
+                    .replace('eggid=', `eggid=${currentPanelConfig.eggId}`)
+                    .replace('nestid=', `nestid=${currentPanelConfig.nestId}`)
+                    .replace('loc=', `loc=${currentPanelConfig.loc}`)
+                    .replace('domain=', `domain=${encodeURIComponent(currentPanelConfig.domain)}`)
+                    .replace('ptla=', `ptla=${currentPanelConfig.ptla}`)
+                    .replace('ptlc=', `ptlc=${currentPanelConfig.ptlc}`);
+
+                try {
+                    const response = await fetch(finalUrl, { method: 'GET' });
+                    const data = await response.json();
+
+                    if (response.ok && data.status) {
+                        const result = data.result;
+                        const panelDomainUrl = result.domain;
+
+                        const fullTextToCopy = `
+━━━━━━━━━━━━━━━━━━━━━━━
+       DETAIL AKUN PANEL
+━━━━━━━━━━━━━━━━━━━━━━━
+Username  : ${result.username}  
+Password  : ${result.password}  
+Spesifikasi          : ${hostingPackage.toUpperCase()}  
+Server : ${selectedPanelType.toUpperCase()}  
+ID User       : ${result.id_user}  
+Server ID    : ${result.id_server}  
+Domain      : ${panelDomainUrl}  
+━━━━━━━━━━━━━━━━━━━━━━━
+Status        : Siap digunakan ✅
+━━━━━━━━━━━━━━━━━━━━━━━
+`;
+
+                        const successMessageHTML = `
+                            <div class="result-title">Panel Berhasil Dibuat!</div>
+                            <div class="result-row"><span>Username:</span> <span id="copyUsernameValue">${result.username}</span></div>
+                            <div class="result-row"><span>Password:</span> <span id="copyPasswordValue">${result.password}</span></div>
+                            <div class="result-row"><span>Spesifikasi:</span> <span>${hostingPackage.toUpperCase()}</span></div>
+                            <div class="result-row"><span>Server:</span> <span>${selectedPanelType.toUpperCase()}</span></div>
+                            <div class="result-row"><span>ID User:</span> <span>${result.id_user}</span></div>
+                            <div class="result-row"><span>Server ID:</span> <span>${result.id_server}</span></div>
+                            <div class="result-row"><span>Domain:</span> <span id="copyDomainValue"><a href="${panelDomainUrl}" target="_blank">${result.domain}</a></span></div>
+
+                            <div class="result-actions">
+                                <button class="copy-button" data-copy-target="copyUsernameValue">Copy Username</button>
+                                <button class="copy-button" data-copy-target="copyPasswordValue">Copy Password</button>
+                                <button class="copy-button" data-copy-target="copyDomainValue">Copy Domain</button>
+                                <button class="login-panel-button" onclick="window.open('${panelDomainUrl}', '_blank')">Login Panel</button>
+                                <button class="copy-all-button" data-copy-value="${fullTextToCopy.trim()}">Salin Data Panel</button>
+                            </div>
+                            <p class="contact-message">
+                                Jika tidak bisa login, silakan hubungi <a href="#">Admin</a>
+                            </p>
+                        `;
+                        responseMessageDiv.className = 'success';
+                        responseMessageDiv.innerHTML = successMessageHTML;
+                        createPanelForm.reset();
+                        showToast('success', 'Panel berhasil dibuat!');
+                    } else {
+                        const errorMessage = data.message || (data.errors && data.errors[0] ? data.errors[0].detail : 'Terjadi kesalahan yang tidak diketahui.');
+                        showPopup('Gagal Membuat Panel!', errorMessage, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showPopup('Kesalahan Jaringan!', 'Terjadi kesalahan saat menghubungi server. Coba lagi nanti.', 'error');
+                } finally {
+                    createButton.textContent = 'CREATE PANEL';
+                    createButton.disabled = false;
+                    loadingSpinner.style.display = 'none';
+                }
+            });
+
+            // Fungsi copy
+            responseMessageDiv.addEventListener('click', async (event) => {
+                if (event.target.classList.contains('copy-button')) {
+                    const targetId = event.target.dataset.copyTarget;
+                    const textToCopy = document.getElementById(targetId).textContent;
+
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        showToast('info', 'Berhasil disalin!');
+                        event.target.textContent = 'Copied!';
+                        setTimeout(() => {
+                            event.target.textContent = targetId.includes('Username') ? 'Copy Username' : 
+                                                     targetId.includes('Password') ? 'Copy Password' : 'Copy Domain';
+                        }, 1500);
+                    } catch (err) {
+                        showToast('error', 'Gagal menyalin!');
+                    }
+                } else if (event.target.classList.contains('copy-all-button')) {
+                    const textToCopy = event.target.dataset.copyValue;
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        showToast('info', 'Semua detail berhasil disalin!');
+                        event.target.textContent = 'All Copied!';
+                        setTimeout(() => {
+                            event.target.textContent = 'Copy All Details';
+                        }, 1500);
+                    } catch (err) {
+                        showToast('error', 'Gagal menyalin semua!');
+                    }
+                }
+            });
+
+            // Animasi dropdown Spesifikasi
+            const hostingPackageSelect = document.getElementById('hostingPackage');
+            hostingPackageSelect.addEventListener('focus', () => {
+                const options = hostingPackageSelect.querySelectorAll('option');
+                options.forEach(option => {
+                    option.style.animation = 'none';
+                    void option.offsetWidth;
+                    option.style.animation = 'slideDown 0.3s ease forwards';
+                });
+            });
+        });
+    </script>
+
+    <footer style="text-align:center; color:#8b949e; margin-top:50px;">© Wanz Official</footer>
+</body>
+</html>
