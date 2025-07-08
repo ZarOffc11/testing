@@ -136,7 +136,7 @@
     <div class="popup1-container">
         <h3 id="popup1-title">Informasi</h3>
         <p id="popup1-message">Ini adalah info ringan.</p>
-        <button class="popup1-close" onclick="closePopup1()">Oke, Mengerti</button>
+        <button class="popup1-close" id="popup1CloseBtn">Oke, Mengerti</button>
     </div>
 </div>
 
@@ -256,7 +256,7 @@
                 document.getElementById('popup1Overlay').style.display = 'none';
             }
 
-
+            document.getElementById('popup1CloseBtn').addEventListener('click', closePopup1);
             
             // Tombol close popup
             document.getElementById('popupCloseBtn').addEventListener('click', () => {
