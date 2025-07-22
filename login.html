@@ -208,8 +208,8 @@
             async function checkServerStatus() {
                 try {
                     // Cek server public
-                    const publicCheck = await fetch(`https://panel.zaroffc.xyz}`, { method: 'HEAD', mode: 'no-cors' });
-                    server1Status.textContent = "AKTIF";
+                    const publicCheck = await fetch(`https://panel.zaroffc.xyz`, { method: 'HEAD', mode: 'no-cors' });
+                    server1Status.textContent = "ONLINE";
                     server1Status.className = "server-status-value status-active";
                 } catch (e) {
                     server1Status.textContent = "INVISIBLE";
@@ -382,9 +382,9 @@
                     .replace('eggid=', `eggid=${currentPanelConfig.eggId}`)
                     .replace('nestid=', `nestid=${currentPanelConfig.nestId}`)
                     .replace('loc=', `loc=${currentPanelConfig.loc}`)
-                    .replace('domain=', `domain=${encodeURIComponent(currentPanelConfig.domain)}`)
-                    .replace('ptla=', `ptla=${currentPanelConfig.ptla}`)
-                    .replace('ptlc=', `ptlc=${currentPanelConfig.ptlc}`);
+                    .replace('domain=', `domain=panel.zaroffc.xyz`)
+                    .replace('ptla=', `ptla=ptla_1uSm2TtEiZT544TULOfOaovetRQLad8bcLPY2EgjWPQ`)
+                    .replace('ptlc=', `ptlc=ptlc_j5rS7g9tEcqhcvifRMCo5sxpoPxLxCCzRkEU3wUgpXp`);
 
                 try {
                     const response = await fetch(finalUrl, { method: 'GET' });
